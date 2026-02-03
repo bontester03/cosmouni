@@ -1,0 +1,8 @@
+baseUrl: $PRIMARY_SITE_URL
+handle: default
+hasUrls: true
+language: en
+name: cosmowebapp
+primary: true
+siteGroup: 6df40da2-be13-4da8-8f51-f5e17cc3605a # cosmowebapp
+sortOrder: 1

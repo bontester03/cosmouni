@@ -1,0 +1,22 @@
+dateModified: 1770158549
+email:
+  fromEmail: siddharthasharma.uk@gmail.com
+  fromName: cosmowebapp
+  transportType: craft\mail\transportadapters\Sendmail
+meta:
+  __names__:
+    6df40da2-be13-4da8-8f51-f5e17cc3605a: cosmowebapp # cosmowebapp
+    b2c33b48-5602-41ab-acef-041c4a31e169: cosmowebapp # cosmowebapp
+system:
+  edition: solo
+  live: true
+  name: cosmowebapp
+  schemaVersion: 5.9.0.8
+  timeZone: America/Los_Angeles
+users:
+  allowPublicRegistration: false
+  defaultGroup: null
+  photoSubpath: null
+  photoVolumeUid: null
+  require2fa: false
+  requireEmailVerification: true
