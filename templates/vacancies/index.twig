@@ -1,0 +1,131 @@
+{% extends "_layouts/site" %}
+
+{% set pageTitle = 'Current vacancies' %}
+{% set q = (craft.app.request.getQueryParam('q') ?? '')|trim %}
+{% set qSafe = q|replace({'"': ' '}) %}
+{% set location = (craft.app.request.getQueryParam('location') ?? '')|trim %}
+{% set contractType = (craft.app.request.getQueryParam('contractType') ?? '')|trim %}
+
+{% set contractOptions = {
+    '': 'Any contract type',
+    'full_time': 'Full-time',
+    'part_time': 'Part-time',
+    'temporary': 'Temporary',
+    'permanent': 'Permanent',
+    'casual': 'Casual',
+    'apprenticeship': 'Apprenticeship',
+    'unknown': 'Unknown',
+} %}
+
+{% set vacanciesQuery = craft.entries()
+    .section('importedVacancies')
+    .status('live')
+    .approvalStatus('approved')
+    .orderBy('closingDate ASC, title ASC')
+    .limit(10)
+%}
+
+{% if q %}
+    {% set searchExpression = 'title:"' ~ qSafe ~ '" OR organisation:"' ~ qSafe ~ '" OR location:"' ~ qSafe ~ '"' %}
+    {% set vacanciesQuery = vacanciesQuery.search(searchExpression) %}
+{% endif %}
+
+{% if location %}
+    {% set vacanciesQuery = vacanciesQuery.location(location) %}
+{% endif %}
+
+{% if contractType %}
+    {% set vacanciesQuery = vacanciesQuery.contractType(contractType) %}
+{% endif %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+    <section class="panel">
+        <h1>{{ pageTitle }}</h1>
+        <p class="muted">Browse current opportunities. New vacancies are reviewed before publication.</p>
+
+        <form method="get" action="{{ siteUrl('vacancies') }}">
+            <div class="field-grid">
+                <div>
+                    <label for="q">Keyword</label>
+                    <input id="q" name="q" type="text" value="{{ q|e }}" placeholder="e.g. planner, admin, Cardiff">
+                </div>
+                <div>
+                    <label for="location">Location</label>
+                    <input id="location" name="location" type="text" value="{{ location|e }}" placeholder="Exact location">
+                </div>
+                <div>
+                    <label for="contractType">Contract type</label>
+                    <select id="contractType" name="contractType">
+                        {% for value, label in contractOptions %}
+                            <option value="{{ value|e }}"{% if value == contractType %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="submit">Apply filters</button>
+            <a class="btn btn-secondary" href="{{ siteUrl('vacancies') }}">Reset</a>
+        </form>
+
+        {% paginate vacanciesQuery as pageInfo, vacancies %}
+
+        {% if vacancies|length %}
+            <div class="cards">
+                {% for vacancy in vacancies %}
+                    {% set contract = vacancy.contractType ?? null %}
+                    {% set detailUrl = vacancy.url ?: null %}
+                    {% set originalUrl = (vacancy.sourceUrl and vacancy.sourceUrl.url) ? vacancy.sourceUrl.url : ((vacancy.applyUrl and vacancy.applyUrl.url) ? vacancy.applyUrl.url : null) %}
+                    {% set displayTitle = vacancy.title ?: 'Vacancy' %}
+                    <article class="card">
+                        <h2>
+                            {% if detailUrl %}
+                                <a href="{{ detailUrl }}">{{ displayTitle|e }}</a>
+                            {% elseif originalUrl %}
+                                <a href="{{ originalUrl }}" target="_blank" rel="noopener noreferrer">{{ displayTitle|e }}</a>
+                            {% else %}
+                                {{ displayTitle|e }}
+                            {% endif %}
+                        </h2>
+                        <ul class="meta">
+                            <li>{{ vacancy.organisation|e }}</li>
+                            <li>{{ vacancy.location|e }}</li>
+                            {% if vacancy.salary %}<li>{{ vacancy.salary|e }}</li>{% endif %}
+                            {% if contract and contract.value %}<li>{{ contract.label|e }}</li>{% endif %}
+                            {% if vacancy.closingDate %}<li>Closes {{ vacancy.closingDate|date('d F Y') }}</li>{% endif %}
+                        </ul>
+                        {% if detailUrl %}
+                            <a class="btn btn-secondary" href="{{ detailUrl }}">View vacancy details</a>
+                        {% endif %}
+                        {% if originalUrl %}
+                            <a class="btn btn-secondary" href="{{ originalUrl }}" target="_blank" rel="noopener noreferrer">Original job page</a>
+                        {% endif %}
+                        {% if not detailUrl and not originalUrl %}
+                            <p class="muted">Link unavailable for this record.</p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+
+            <nav class="pagination" aria-label="Pagination">
+                <div>
+                    {% if pageInfo.prevUrl %}
+                        <a class="btn btn-secondary" href="{{ pageInfo.prevUrl }}">Previous</a>
+                    {% endif %}
+                </div>
+                <p class="muted">Page {{ pageInfo.currentPage }} of {{ pageInfo.totalPages }}</p>
+                <div>
+                    {% if pageInfo.nextUrl %}
+                        <a class="btn btn-secondary" href="{{ pageInfo.nextUrl }}">Next</a>
+                    {% endif %}
+                </div>
+            </nav>
+        {% else %}
+            {% if q or location or contractType %}
+                <p class="muted" style="margin-top:16px;">No approved vacancies match your filters.</p>
+            {% else %}
+                <p class="muted" style="margin-top:16px;">No vacancies are published yet. Please check back shortly.</p>
+            {% endif %}
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,12 +1,32 @@
-dateModified: 1770158549
+dateModified: 1772703582
 email:
   fromEmail: siddharthasharma.uk@gmail.com
   fromName: cosmowebapp
   transportType: craft\mail\transportadapters\Sendmail
 meta:
   __names__:
+    1b4074aa-8df2-4aab-9b22-1736ec18d07c: Location # Location
+    1cb82e35-7551-4525-8bac-b025b7c0cf10: 'Reviewed By' # Reviewed By
+    2a04a5a1-3fde-4ae5-a6fa-05082b4a06db: 'Job Reference' # Job Reference
+    2f702f83-240d-48a8-a555-07cef12d0754: 'Imported Vacancies' # Imported Vacancies
     6df40da2-be13-4da8-8f51-f5e17cc3605a: cosmowebapp # cosmowebapp
+    8aab91ad-34e0-4680-854f-0310d2e97894: 'Apply URL' # Apply URL
+    8f1c555c-44ce-4a15-9176-9d992f479703: 'Approval Status' # Approval Status
+    87c65d19-24b5-4a35-922a-6899c29d3245: 'Rejection Reason' # Rejection Reason
+    89d4119b-cecc-4090-828d-42137f72c517: 'External Key' # External Key
+    629d8ea4-ee8e-4d9c-97b4-cfbfdec01bad: Organisation # Organisation
+    724a7328-ae56-454c-bf18-c52da9bb704f: Salary # Salary
+    933be93b-2da3-40ef-bb28-2f375b82685b: 'Imported Vacancy' # Imported Vacancy
+    06885d2b-21b3-46c8-bde8-9b692002de53: 'Source URL' # Source URL
+    746862ac-d6ce-43ed-bb5d-6a9d4e628290: 'Reviewed At' # Reviewed At
+    865823d5-d35c-4b77-beae-d5be75d3f14d: 'Contract Type' # Contract Type
+    2554095a-ae8b-460a-82bd-9973a0f90882: 'Imported At' # Imported At
+    b2a18cf3-d4e7-44ae-8456-efbe51263875: 'Public Schema' # Public Schema
     b2c33b48-5602-41ab-acef-041c4a31e169: cosmowebapp # cosmowebapp
+    b3eda696-cc79-4d66-8eaa-ee04133ea442: 'Closing Date' # Closing Date
+    be688654-5e78-4d96-afd7-a8c1ee34a7c0: Description # Description
+    c58f6d3f-13b7-4644-bbb4-901b3fded867: 'Source Name' # Source Name
+    f7901907-e026-4770-84d3-4f113cfe6c03: 'Last Seen At' # Last Seen At
 system:
   edition: solo
   live: true

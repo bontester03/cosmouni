@@ -1,0 +1,94 @@
+{% extends "_layouts/site" %}
+
+{% if not entry is defined or not entry or entry.section.handle != 'importedVacancies' %}
+    {% exit 404 %}
+{% endif %}
+
+{% set approval = entry.approvalStatus ?? null %}
+{% if not entry.enabled or not entry.enabledForSite or not approval or approval.value != 'approved' %}
+    {% exit 404 %}
+{% endif %}
+
+{% set applyLink = entry.applyUrl ?? null %}
+{% set sourceLink = entry.sourceUrl ?? null %}
+{% set originalJobUrl = (sourceLink and sourceLink.url) ? sourceLink.url : ((applyLink and applyLink.url) ? applyLink.url : null) %}
+{% set extractedFacts = {} %}
+{% set factLabels = ['employer', 'contract hours', 'contract type', 'pay', 'area of care', 'workplace', 'job role', 'location', 'job reference', 'closing date'] %}
+
+{% if entry.description and entry.description is string %}
+    {% for rawLine in entry.description|split('\n') %}
+        {% set line = rawLine|trim %}
+        {% if ':' in line %}
+            {% set parts = line|split(':', 2) %}
+            {% if parts|length == 2 %}
+                {% set key = parts[0]|trim|lower %}
+                {% set value = parts[1]|trim %}
+                {% if key in factLabels and value %}
+                    {% set extractedFacts = extractedFacts|merge({ (key): value }) %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% block title %}{{ entry.title }}{% endblock %}
+
+{% block content %}
+    <article class="panel detail">
+        <p><a class="btn btn-secondary" href="{{ siteUrl('vacancies') }}">Back to vacancies</a></p>
+
+        <h1>{{ entry.title|e }}</h1>
+
+        <h2>Job details</h2>
+        <dl>
+            {% if entry.organisation or extractedFacts['employer'] is defined %}
+                <dt>Employer</dt>
+                <dd>{{ (entry.organisation ?: extractedFacts['employer'])|e }}</dd>
+            {% endif %}
+            {% if entry.location or extractedFacts['location'] is defined %}
+                <dt>Location</dt>
+                <dd>{{ (entry.location ?: extractedFacts['location'])|e }}</dd>
+            {% endif %}
+            {% if extractedFacts['contract hours'] is defined %}<dt>Contract hours</dt><dd>{{ extractedFacts['contract hours']|e }}</dd>{% endif %}
+            {% if entry.contractType and entry.contractType.value %}
+                <dt>Contract type</dt><dd>{{ entry.contractType.label|e }}</dd>
+            {% elseif extractedFacts['contract type'] is defined %}
+                <dt>Contract type</dt><dd>{{ extractedFacts['contract type']|e }}</dd>
+            {% endif %}
+            {% if entry.salary or extractedFacts['pay'] is defined %}
+                <dt>Pay</dt>
+                <dd>{{ (entry.salary ?: extractedFacts['pay'])|e }}</dd>
+            {% endif %}
+            {% if extractedFacts['area of care'] is defined %}<dt>Area of care</dt><dd>{{ extractedFacts['area of care']|e }}</dd>{% endif %}
+            {% if extractedFacts['workplace'] is defined %}<dt>Workplace</dt><dd>{{ extractedFacts['workplace']|e }}</dd>{% endif %}
+            {% if extractedFacts['job role'] is defined %}<dt>Job role</dt><dd>{{ extractedFacts['job role']|e }}</dd>{% endif %}
+            {% if entry.closingDate %}
+                <dt>Closing date</dt><dd>{{ entry.closingDate|date('d F Y') }}</dd>
+            {% elseif extractedFacts['closing date'] is defined %}
+                <dt>Closing date</dt><dd>{{ extractedFacts['closing date']|e }}</dd>
+            {% endif %}
+            {% if entry.jobReference or extractedFacts['job reference'] is defined %}
+                <dt>Job reference</dt>
+                <dd>{{ (entry.jobReference ?: extractedFacts['job reference'])|e }}</dd>
+            {% endif %}
+        </dl>
+
+        {% if entry.description %}
+            <h2>Job description</h2>
+            {% if entry.description is string %}
+                <p>{{ entry.description|e|nl2br }}</p>
+            {% else %}
+                {{ entry.description }}
+            {% endif %}
+        {% endif %}
+
+        <p style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+            {% if originalJobUrl %}
+                <a class="btn btn-primary" href="{{ originalJobUrl }}" target="_blank" rel="noopener noreferrer">Apply on original job page</a>
+            {% endif %}
+            {% if applyLink and applyLink.url and sourceLink and sourceLink.url and applyLink.url != sourceLink.url %}
+                <a class="btn btn-secondary" href="{{ applyLink.url }}" target="_blank" rel="noopener noreferrer">Direct apply link</a>
+            {% endif %}
+        </p>
+    </article>
+{% endblock %}

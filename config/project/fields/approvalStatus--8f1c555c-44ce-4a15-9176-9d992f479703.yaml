@@ -1,0 +1,38 @@
+columnSuffix: null
+handle: approvalStatus
+instructions: null
+name: 'Approval Status'
+searchable: true
+settings:
+  customOptions: false
+  options:
+    -
+      __assoc__:
+        -
+          - label
+          - Pending
+        -
+          - value
+          - pending
+        -
+          - default
+          - true
+    -
+      __assoc__:
+        -
+          - label
+          - Approved
+        -
+          - value
+          - approved
+    -
+      __assoc__:
+        -
+          - label
+          - Rejected
+        -
+          - value
+          - rejected
+translationKeyFormat: null
+translationMethod: none
+type: craft\fields\Dropdown

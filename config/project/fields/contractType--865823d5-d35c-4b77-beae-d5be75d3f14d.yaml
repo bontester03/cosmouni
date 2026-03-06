@@ -1,0 +1,67 @@
+columnSuffix: null
+handle: contractType
+instructions: null
+name: 'Contract Type'
+searchable: true
+settings:
+  customOptions: false
+  options:
+    -
+      __assoc__:
+        -
+          - label
+          - Full-time
+        -
+          - value
+          - full_time
+    -
+      __assoc__:
+        -
+          - label
+          - Part-time
+        -
+          - value
+          - part_time
+    -
+      __assoc__:
+        -
+          - label
+          - Temporary
+        -
+          - value
+          - temporary
+    -
+      __assoc__:
+        -
+          - label
+          - Permanent
+        -
+          - value
+          - permanent
+    -
+      __assoc__:
+        -
+          - label
+          - Casual
+        -
+          - value
+          - casual
+    -
+      __assoc__:
+        -
+          - label
+          - Apprenticeship
+        -
+          - value
+          - apprenticeship
+    -
+      __assoc__:
+        -
+          - label
+          - Unknown
+        -
+          - value
+          - unknown
+translationKeyFormat: null
+translationMethod: none
+type: craft\fields\Dropdown
