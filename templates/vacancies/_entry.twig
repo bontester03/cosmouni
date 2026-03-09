@@ -34,61 +34,255 @@
 {% block title %}{{ entry.title }}{% endblock %}
 
 {% block content %}
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .back-nav {
+            margin-bottom: 24px;
+        }
+
+        .back-nav .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .back-nav .btn::before {
+            content: '←';
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .back-nav .btn:hover::before {
+            transform: translateX(-4px);
+        }
+
+        .entry-header {
+            margin-bottom: 36px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(90deg, #667eea, #764ba2, transparent) 1;
+        }
+
+        .entry-header h1 {
+            margin: 0;
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.3;
+        }
+
+        .detail-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+
+        .detail-section h2 {
+            margin: 0 0 20px 0;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-section h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .detail dl {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 16px 20px;
+            margin: 0;
+        }
+
+        .detail dt {
+            font-weight: 700;
+            color: #64748b;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .detail dd {
+            margin: 0;
+            color: #1e293b;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .description-content {
+            color: #334155;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .description-content p {
+            margin-top: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 24px 0 0 0;
+        }
+
+        .action-buttons .btn {
+            font-size: 1.05rem;
+            padding: 14px 28px;
+            transition: all 0.2s ease;
+        }
+
+        .action-buttons .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-buttons .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-buttons .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-buttons .btn-secondary::after {
+            content: '→';
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .action-buttons .btn-secondary:hover::after {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 640px) {
+            .detail dl {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .detail dt {
+                font-weight: 700;
+                color: #475569;
+            }
+
+            .detail dd {
+                margin-bottom: 16px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .detail dd:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+
     <article class="panel detail">
-        <p><a class="btn btn-secondary" href="{{ siteUrl('vacancies') }}">Back to vacancies</a></p>
+        <div class="back-nav">
+            <a class="btn btn-secondary" href="{{ siteUrl('vacancies') }}">Back to vacancies</a>
+        </div>
 
-        <h1>{{ entry.title|e }}</h1>
+        <div class="entry-header">
+            <h1>{{ entry.title|e }}</h1>
+        </div>
 
-        <h2>Job details</h2>
-        <dl>
-            {% if entry.organisation or extractedFacts['employer'] is defined %}
-                <dt>Employer</dt>
-                <dd>{{ (entry.organisation ?: extractedFacts['employer'])|e }}</dd>
-            {% endif %}
-            {% if entry.location or extractedFacts['location'] is defined %}
-                <dt>Location</dt>
-                <dd>{{ (entry.location ?: extractedFacts['location'])|e }}</dd>
-            {% endif %}
-            {% if extractedFacts['contract hours'] is defined %}<dt>Contract hours</dt><dd>{{ extractedFacts['contract hours']|e }}</dd>{% endif %}
-            {% if entry.contractType and entry.contractType.value %}
-                <dt>Contract type</dt><dd>{{ entry.contractType.label|e }}</dd>
-            {% elseif extractedFacts['contract type'] is defined %}
-                <dt>Contract type</dt><dd>{{ extractedFacts['contract type']|e }}</dd>
-            {% endif %}
-            {% if entry.salary or extractedFacts['pay'] is defined %}
-                <dt>Pay</dt>
-                <dd>{{ (entry.salary ?: extractedFacts['pay'])|e }}</dd>
-            {% endif %}
-            {% if extractedFacts['area of care'] is defined %}<dt>Area of care</dt><dd>{{ extractedFacts['area of care']|e }}</dd>{% endif %}
-            {% if extractedFacts['workplace'] is defined %}<dt>Workplace</dt><dd>{{ extractedFacts['workplace']|e }}</dd>{% endif %}
-            {% if extractedFacts['job role'] is defined %}<dt>Job role</dt><dd>{{ extractedFacts['job role']|e }}</dd>{% endif %}
-            {% if entry.closingDate %}
-                <dt>Closing date</dt><dd>{{ entry.closingDate|date('d F Y') }}</dd>
-            {% elseif extractedFacts['closing date'] is defined %}
-                <dt>Closing date</dt><dd>{{ extractedFacts['closing date']|e }}</dd>
-            {% endif %}
-            {% if entry.jobReference or extractedFacts['job reference'] is defined %}
-                <dt>Job reference</dt>
-                <dd>{{ (entry.jobReference ?: extractedFacts['job reference'])|e }}</dd>
-            {% endif %}
-        </dl>
+        <div class="detail-section">
+            <h2>Job Details</h2>
+            <dl>
+                {% if entry.organisation or extractedFacts['employer'] is defined %}
+                    <dt>🏢 Employer</dt>
+                    <dd>{{ (entry.organisation ?: extractedFacts['employer'])|e }}</dd>
+                {% endif %}
+                {% if entry.location or extractedFacts['location'] is defined %}
+                    <dt>📍 Location</dt>
+                    <dd>{{ (entry.location ?: extractedFacts['location'])|e }}</dd>
+                {% endif %}
+                {% if extractedFacts['contract hours'] is defined %}
+                    <dt>⏱️ Contract hours</dt>
+                    <dd>{{ extractedFacts['contract hours']|e }}</dd>
+                {% endif %}
+                {% if entry.contractType and entry.contractType.value %}
+                    <dt>💼 Contract type</dt>
+                    <dd>{{ entry.contractType.label|e }}</dd>
+                {% elseif extractedFacts['contract type'] is defined %}
+                    <dt>💼 Contract type</dt>
+                    <dd>{{ extractedFacts['contract type']|e }}</dd>
+                {% endif %}
+                {% if entry.salary or extractedFacts['pay'] is defined %}
+                    <dt>💰 Pay</dt>
+                    <dd>{{ (entry.salary ?: extractedFacts['pay'])|e }}</dd>
+                {% endif %}
+                {% if extractedFacts['area of care'] is defined %}
+                    <dt>🏥 Area of care</dt>
+                    <dd>{{ extractedFacts['area of care']|e }}</dd>
+                {% endif %}
+                {% if extractedFacts['workplace'] is defined %}
+                    <dt>🏢 Workplace</dt>
+                    <dd>{{ extractedFacts['workplace']|e }}</dd>
+                {% endif %}
+                {% if extractedFacts['job role'] is defined %}
+                    <dt>👤 Job role</dt>
+                    <dd>{{ extractedFacts['job role']|e }}</dd>
+                {% endif %}
+                {% if entry.closingDate %}
+                    <dt>⏰ Closing date</dt>
+                    <dd>{{ entry.closingDate|date('d F Y') }}</dd>
+                {% elseif extractedFacts['closing date'] is defined %}
+                    <dt>⏰ Closing date</dt>
+                    <dd>{{ extractedFacts['closing date']|e }}</dd>
+                {% endif %}
+                {% if entry.jobReference or extractedFacts['job reference'] is defined %}
+                    <dt>🔖 Job reference</dt>
+                    <dd>{{ (entry.jobReference ?: extractedFacts['job reference'])|e }}</dd>
+                {% endif %}
+            </dl>
+        </div>
 
         {% if entry.description %}
-            <h2>Job description</h2>
-            {% if entry.description is string %}
-                <p>{{ entry.description|e|nl2br }}</p>
-            {% else %}
-                {{ entry.description }}
-            {% endif %}
+            <div class="detail-section">
+                <h2>Job Description</h2>
+                <div class="description-content">
+                    {% if entry.description is string %}
+                        <p>{{ entry.description|e|nl2br }}</p>
+                    {% else %}
+                        {{ entry.description }}
+                    {% endif %}
+                </div>
+            </div>
         {% endif %}
 
-        <p style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
-            {% if originalJobUrl %}
-                <a class="btn btn-primary" href="{{ originalJobUrl }}" target="_blank" rel="noopener noreferrer">Apply on original job page</a>
+        <div class="action-buttons">
+            {% if applyLink and applyLink.url %}
+                <a class="btn btn-primary" href="{{ applyLink.url }}" target="_blank" rel="noopener noreferrer">Direct Apply Link</a>
+            {% elseif originalJobUrl %}
+                <a class="btn btn-primary" href="{{ originalJobUrl }}" target="_blank" rel="noopener noreferrer">Direct Apply Link</a>
             {% endif %}
-            {% if applyLink and applyLink.url and sourceLink and sourceLink.url and applyLink.url != sourceLink.url %}
-                <a class="btn btn-secondary" href="{{ applyLink.url }}" target="_blank" rel="noopener noreferrer">Direct apply link</a>
-            {% endif %}
-        </p>
+        </div>
     </article>
 {% endblock %}

@@ -19,106 +19,278 @@
 
 {% block content %}
     <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
         .hero {
-            padding: 22px;
-            border-radius: 14px;
-            background: linear-gradient(130deg, #0b5fff 0%, #1f78ff 55%, #5ca5ff 100%);
+            padding: 48px 36px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            position: relative;
+            overflow: hidden;
             color: #fff;
-            margin-bottom: 16px;
+            margin-bottom: 32px;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
             margin-top: 0;
-            margin-bottom: 10px;
-            font-size: clamp(1.5rem, 2.8vw, 2rem);
+            margin-bottom: 16px;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
         }
 
         .hero p {
             margin-top: 0;
-            margin-bottom: 14px;
-            max-width: 62ch;
-            line-height: 1.5;
+            margin-bottom: 24px;
+            max-width: 60ch;
+            line-height: 1.7;
+            font-size: 1.125rem;
+            opacity: 0.95;
         }
 
         .hero .btn-primary {
             background: #fff;
-            color: #0b5fff;
+            color: #667eea;
             border-color: #fff;
+            padding: 14px 32px;
+            font-size: 1.05rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .hero .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2);
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 12px;
-            margin-bottom: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
         }
 
         .tile {
-            background: #fff;
-            border: 1px solid #dbe3ef;
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 28px 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .tile:nth-child(1) { animation-delay: 0.1s; }
+        .tile:nth-child(2) { animation-delay: 0.2s; }
+        .tile:nth-child(3) { animation-delay: 0.3s; }
+
+        .tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .tile:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .tile:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tile-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
             border-radius: 12px;
-            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            font-size: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
         }
 
         .tile h2 {
-            margin: 0;
-            font-size: 0.95rem;
-            color: #475569;
-            font-weight: 700;
+            margin: 0 0 12px 0;
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .tile strong {
             display: block;
-            margin-top: 6px;
-            font-size: 1.6rem;
-            line-height: 1.1;
+            font-size: 2.5rem;
+            line-height: 1;
             color: #0f172a;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .links {
-            background: #fff;
-            border: 1px solid #dbe3ef;
-            border-radius: 12px;
-            padding: 16px;
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            animation: fadeInUp 0.6s ease-out 0.4s;
+            animation-fill-mode: both;
         }
 
         .links h2 {
             margin-top: 0;
-            margin-bottom: 8px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #0f172a;
+            font-weight: 700;
         }
 
         .links ul {
             margin: 0;
-            padding-left: 18px;
-            line-height: 1.6;
+            padding: 0;
+            list-style: none;
+        }
+
+        .links li {
+            margin-bottom: 16px;
+        }
+
+        .links li:last-child {
+            margin-bottom: 0;
+        }
+
+        .links a {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: #fff;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            text-decoration: none;
+            color: #334155;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .links a::before {
+            content: '→';
+            display: inline-block;
+            margin-right: 12px;
+            font-size: 1.25rem;
+            color: #667eea;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        .links a:hover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+            transform: translateX(4px);
+        }
+
+        .links a:hover::before {
+            transform: translateX(4px);
         }
     </style>
 
     <section class="hero">
-        <h1>Welcome to the vacancies portal</h1>
-        <p>
-            Find current approved opportunities, review closing dates, and open each vacancy for full details and application links.
-        </p>
-        <a class="btn btn-primary" href="{{ siteUrl('vacancies') }}">Browse vacancies</a>
+        <div class="hero-content">
+            <h1>✨ Welcome to the Vacancies Portal</h1>
+            <p>
+                Discover exciting career opportunities, track closing dates, and explore detailed vacancy information. Your next great role is just a click away.
+            </p>
+            <a class="btn btn-primary" href="{{ siteUrl('vacancies') }}">Browse Vacancies</a>
+        </div>
     </section>
 
     <section class="grid" aria-label="Vacancy overview">
         <article class="tile">
-            <h2>Approved live vacancies</h2>
+            <div class="tile-icon">📋</div>
+            <h2>Live Vacancies</h2>
             <strong>{{ approvedVacanciesCount }}</strong>
         </article>
         <article class="tile">
-            <h2>Closing in next 14 days</h2>
+            <div class="tile-icon">⏰</div>
+            <h2>Closing Soon</h2>
             <strong>{{ closingSoonCount }}</strong>
         </article>
         <article class="tile">
-            <h2>Last updated</h2>
-            <strong>{{ now|date('d F Y') }}</strong>
+            <div class="tile-icon">📅</div>
+            <h2>Last Updated</h2>
+            <strong style="font-size: 1.4rem;">{{ now|date('d M Y') }}</strong>
         </article>
     </section>
 
     <section class="links">
-        <h2>Quick links</h2>
+        <h2>Quick Links</h2>
         <ul>
             <li><a href="{{ siteUrl('vacancies') }}">View all current vacancies</a></li>
             <li><a href="{{ cpUrl('entries/importedVacancies') }}">Admin: review imported vacancies</a></li>

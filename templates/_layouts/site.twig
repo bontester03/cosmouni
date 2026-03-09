@@ -43,6 +43,55 @@
         .site-title a {
             color: var(--ink);
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .site-title a:hover {
+            opacity: 0.8;
+            transform: translateX(-2px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .site-title a:hover .logo {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.35);
+        }
+
+        .site-name {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .site-name-main {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0f172a;
+        }
+
+        .site-name-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         main {
@@ -174,7 +223,15 @@
 <body>
 <header>
     <div class="wrap">
-        <p class="site-title"><a href="{{ siteUrl('') }}">{{ appBrand }}</a></p>
+        <p class="site-title">
+            <a href="{{ siteUrl('') }}">
+                <span class="logo">🔍</span>
+                <span class="site-name">
+                    <span class="site-name-main">Vacancies Portal</span>
+                    <span class="site-name-sub">Find Your Next Opportunity</span>
+                </span>
+            </a>
+        </p>
     </div>
 </header>
 <main>
